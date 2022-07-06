@@ -1,3 +1,15 @@
+<?php
+    session_start();
+    //print_r($_SESSION);
+    if((!isset($_SESSION['usuario']) == true) and (!isset($_SESSION['senha']) == true)){
+
+        unset($_SESSION['usuario']);
+        unset($_SESSION['senha']);
+        header('Location: index.php');
+    }else{
+        $logado = $_SESSION['usuario'];
+    }
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -22,22 +34,7 @@
 
         </form>
         <!-- Barra de navegação -->
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                    </svg>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="cadastrarComputadores.php">Cadastrar computadores</a></li>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <li><a class="dropdown-item" href='sair.php'>Sair</a></li>
-                </ul>
-            </li>
-        </ul>
+       
     </nav>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
@@ -66,7 +63,7 @@
                         <li>
                             <hr class="dropdown-divider" />
                         </li>
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseServer" aria-expanded="false" aria-controls="collapseServer">
+                        <a class="nav-link collapsed" href="#" onclick="window.location.href='sair.php'" data-bs-toggle="collapse" data-bs-target="#collapseServer" aria-expanded="false" aria-controls="collapseServer">
                             <div class="sb-nav-link-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
@@ -78,7 +75,8 @@
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small fs-6 fw-bold">Logado como:</div>
+                    <div class="small fs-6 fw-bold">Logado como: </div>
+                    <?php echo $logado ?>
 
                 </div>
             </nav>
