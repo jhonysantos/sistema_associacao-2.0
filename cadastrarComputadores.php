@@ -1,28 +1,3 @@
-<?php
-session_start();
-include_once('config.php');
-//print_r($_SESSION);
-if ((!isset($_SESSION['email']) == true) and (!isset($_SESSION['password']) == true)) {
-
-    unset($_SESSION['email']);
-    unset($_SESSION['password']);
-    header('Location: login.php');
-}
-
-$sqlTotalServer = "SELECT COUNT(*) AS 'quantidade', b.tname AS 'descricao' FROM devices a
-                    INNER JOIN devicetypes b on a.type = b.tid WHERE b.tname LIKE '%Hypervisor%'";
-
-$sqlServidores = "SELECT a.hostname, a.ip_addr, a.description, c.name AS 'sessao', d.name AS'rack', e.name AS 'local' FROM devices a 
-                    LEFT JOIN devicetypes b ON a.type = b.tid 
-                    LEFT JOIN sections c ON a.sections = c.id 
-                    LEFT JOIN racks d ON a.rack = d.id 
-                    LEFT JOIN locations e ON a.location = e.id 
-                    WHERE b.tname like '%Hypervisor%';";
-
-$resultTotalServer = $conexao2->query($sqlTotalServer);
-$resultServidores = $conexao2->query($sqlServidores);
-
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -34,7 +9,7 @@ $resultServidores = $conexao2->query($sqlServidores);
     <title>Inventário - VOETUR</title>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-secondary">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Barra de navegação -->
         <a class="navbar-brand ps-3" href="index.php">Dashboard</a>
@@ -45,7 +20,7 @@ $resultServidores = $conexao2->query($sqlServidores);
             </svg></button>
         <!-- Pesquisa na barra de navegação -->
         <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            
+
         </form>
         <!-- Barra de navegação -->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -56,12 +31,11 @@ $resultServidores = $conexao2->query($sqlServidores);
                     </svg>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!">Configurações</a></li>
-                    <li><a class="dropdown-item" href="#!">Registro de atividade</a></li>
+                    <li><a class="dropdown-item" href="cadastrarComputadores.php">Cadastrar computadores</a></li>
                     <li>
                         <hr class="dropdown-divider" />
                     </li>
-                    <li><a class="dropdown-item" href="#!">Sair</a></li>
+                    <li><a class="dropdown-item" href='sair.php'>Sair</a></li>
                 </ul>
             </li>
         </ul>
@@ -109,7 +83,7 @@ $resultServidores = $conexao2->query($sqlServidores);
                                 </a>
                             </nav>
                         </div>
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="servidoresLogicos.php">
                             <div class="sb-nav-link-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc" viewBox="0 0 16 16">
                                     <path d="M5 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H5Zm.5 14a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1Zm2 0a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1ZM5 1.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5ZM5.5 3h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1Z" />
@@ -248,69 +222,67 @@ $resultServidores = $conexao2->query($sqlServidores);
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logado como:</div>
-                    Inventário VOETUR
+                    <?php echo $logado ?>
                 </div>
             </nav>
         </div>
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid px-4">
-                    <h2>Servidores Virtuais</h2>
-                    <ol class="breadcrumb ">
-                        <li class="breadcrumb-item active">
-                            <?php
-                            while ($data_server = mysqli_fetch_assoc($resultTotalServer)) {
-                                $totalServer = $data_server['quantidade'];
-                            }
-                            ?>
-                            Contém o total de <?php echo $totalServer ?> servidores físicos
-                        </li>
-                    </ol>
-
-                </div>
-                <div class="mx-4">
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="fas fa-table me-1"></i>
-                            Especificações dos servidores
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-dark table-hover" id="datatablesSimple">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nome</th>
-                                        <th scope="col">IP</th>
-                                        <th scope="col">Descrição</th>
-                                        <th scope="col">Sessão</th>
-                                        <th scope="col">Rack</th>
-                                        <th scope="col">Local</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th scope="col">Nome</th>
-                                        <th scope="col">IP</th>
-                                        <th scope="col">Descrição</th>
-                                        <th scope="col">Sessão</th>
-                                        <th scope="col">Rack</th>
-                                        <th scope="col">Local</th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    <?php
-                                    while ($server_data = mysqli_fetch_assoc($resultServidores)) {
-                                        echo "<tr>";
-                                        echo "<td>" . $server_data['hostname'] . "</td>";
-                                        echo "<td>" . $server_data['ip_addr'] . "</td>";
-                                        echo "<td>" . $server_data['description'] . "</td>";
-                                        echo "<td>" . $server_data['sessao'] . "</td>";
-                                        echo "<td>" . $server_data['rack'] . "</td>";
-                                        echo "<td>" . $server_data['local'] . "</td>";
-                                        echo "</tr>";
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header">
+                                    <h3 class="text-center font-weight-light my-4">Cadastro</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="inputEmail4" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="inputEmail4">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputPassword4" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="inputPassword4">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="inputAddress" class="form-label">Address</label>
+                                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="inputAddress2" class="form-label">Address 2</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputCity" class="form-label">City</label>
+                                            <input type="text" class="form-control" id="inputCity">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="inputState" class="form-label">State</label>
+                                            <select id="inputState" class="form-select">
+                                                <option selected>Choose...</option>
+                                                <option>...</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="inputZip" class="form-label">Zip</label>
+                                            <input type="text" class="form-control" id="inputZip">
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="gridCheck">
+                                                <label class="form-check-label" for="gridCheck">
+                                                    Check me out
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Sign in</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -320,9 +292,8 @@ $resultServidores = $conexao2->query($sqlServidores);
 
     <script type="text/javascript" src="assets/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="assets/js/simple-datatables.js"></script>
-    <script type="text/javascript" src="assets/js/datatables-simple-demo.js"></script>
-    <script type="text/javascript" src="assets/js/scripts.js"></script>
+    <script src="assets/js/scripts.js"></script>
+
 
 </body>
 
