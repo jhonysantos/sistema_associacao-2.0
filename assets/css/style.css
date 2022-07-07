@@ -6045,6 +6045,34 @@ textarea.form-control-lg {
   -webkit-animation: placeholder-glow 2s ease-in-out infinite;
           animation: placeholder-glow 2s ease-in-out infinite;
 }
+.bodyContainer{
+  text-align: justify;
+  border: solid #7c7b7b;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.input{
+  margin-bottom: 20px;
+}
+.radius{
+  margin-bottom: 20px;
+}
+.fontbold{
+  font-weight: 500;
+}
+nav{
+  align-items: center;
+}
+.cabecalho{
+  border: 1px solid #7c7b7b;
+  padding: 10px;
+  text-align: center;
+  background-color: #7c7b7b;
+  border-radius: 8px;
+  color: #FFFFFF;
+}
 
 @-webkit-keyframes placeholder-glow {
   50% {
